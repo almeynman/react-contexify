@@ -13,20 +13,22 @@ class ContextMenu extends Component {
     className: PropTypes.string,
     style: PropTypes.object,
     theme: PropTypes.string,
-    animation: PropTypes.string
+    animation: PropTypes.string,
+    visible: PropTypes.bool
   };
 
   static defaultProps = {
     className: null,
     style: {},
     theme: null,
-    animation: null
+    animation: null,
+    visible: false
   };
 
   state = {
     x: 0,
     y: 0,
-    visible: false,
+    visible: this.props.visible || false,
     nativeEvent: null
   };
 
@@ -38,6 +40,12 @@ class ContextMenu extends Component {
   componentDidMount() {
     this.unsub.push(eventManager.on(`display::${this.props.id}`, this.show));
     this.unsub.push(eventManager.on('hideAll', this.hide));
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.visible !== nextProps.visible) {
+      this.setState({ visible: nextProps.visible });
+    }
   }
 
   componentWillUnmount() {
